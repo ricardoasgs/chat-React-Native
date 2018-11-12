@@ -19,6 +19,8 @@ import {
   validateToken
 } from "../actions/loginActions";
 
+import Icon from "react-native-vector-icons/FontAwesome";
+
 class Login extends Component {
   static navigationOptions = {
     header: null
@@ -28,14 +30,14 @@ class Login extends Component {
     const token = await AsyncStorage.getItem("token");
 
     if (token) {
-      this.navigateToTimeline();
+      this.navigateToApp();
     }
   }
 
-  navigateToTimeline = () => {
+  navigateToApp = () => {
     const resetAction = StackActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({ routeName: "Timeline" })]
+      actions: [NavigationActions.navigate({ routeName: "Main" })]
     });
     this.props.navigation.dispatch(resetAction);
   };
@@ -44,6 +46,15 @@ class Login extends Component {
     return (
       <KeyboardAvoidingView style={styles.container}>
         <View style={styles.content}>
+          <View style={styles.logoContainer}>
+            <Icon
+              style={{ marginRight: 20 }}
+              name="comments"
+              size={40}
+              color="#FF6600"
+            />
+            <Text style={styles.textLogo}>Messenger</Text>
+          </View>
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -58,10 +69,7 @@ class Login extends Component {
             returnKeyType="send"
             onSubmitEditing={() => this.props.login({ email, password })}
           />
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.props.login({ email, password })}
-          >
+          <TouchableOpacity style={styles.button} onPress={this.navigateToApp}>
             <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
         </View>
@@ -74,6 +82,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFF"
+  },
+
+  logoContainer: {
+    backgroundColor: "#FFF",
+    flexDirection: "row"
+  },
+
+  textLogo: {
+    fontSize: 24
   },
 
   content: {
