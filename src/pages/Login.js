@@ -10,13 +10,16 @@ import {
   StyleSheet,
   AsyncStorage
 } from "react-native";
+import Toaster from "react-native-toaster";
 import { StackActions, NavigationActions } from "react-navigation";
 
+import { addToast } from "../actions/toasterActions";
 import {
   changeEmail,
   changePassword,
   login,
-  validateToken
+  validateToken,
+  initForm
 } from "../actions/loginActions";
 
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -27,7 +30,11 @@ class Login extends Component {
   };
 
   async componentDidMount() {
+    this.props.initForm();
+
     const token = await AsyncStorage.getItem("token");
+
+    console.log(token);
 
     if (token) {
       this.navigateToApp();
@@ -43,8 +50,13 @@ class Login extends Component {
   };
 
   render() {
+    const { email, password } = this.props;
     return (
       <KeyboardAvoidingView style={styles.container}>
+        <Toaster
+          message={this.props.toastMessage}
+          onShow={() => this.props.addToast(null)}
+        />
         <View style={styles.content}>
           <View style={styles.logoContainer}>
             <Icon
@@ -58,18 +70,21 @@ class Login extends Component {
           <TextInput
             style={styles.input}
             placeholder="Email"
-            value={this.props.email}
+            value={email}
             onChangeText={this.props.changeEmail}
           />
           <TextInput
             style={styles.input}
             placeholder="Password"
-            value={this.props.password}
+            value={password}
             onChangeText={this.props.changePassword}
             returnKeyType="send"
             onSubmitEditing={() => this.props.login({ email, password })}
           />
-          <TouchableOpacity style={styles.button} onPress={this.navigateToApp}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => this.props.login({ email, password })}
+          >
             <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
         </View>
@@ -130,15 +145,15 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   token: state.login.token,
   userId: state.login.userId,
-  username: state.login.username,
   email: state.login.email,
   password: state.login.password,
-  confirmPassword: state.login.confirmPassword
+  confirmPassword: state.login.confirmPassword,
+  toastMessage: state.toaster.message
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
-    { changeEmail, changePassword, login, validateToken },
+    { changeEmail, changePassword, login, validateToken, initForm, addToast },
     dispatch
   );
 

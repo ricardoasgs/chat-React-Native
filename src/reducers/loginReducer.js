@@ -12,18 +12,25 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case "TOKEN_VALIDATED":
-      if (action.payload) {
-        return { ...state, validToken: true };
-      } else {
-        return { ...state, validToken: false, user: null };
-      }
     case "USER_FETCHED":
-      return { ...state, user: action.payload, validToken: true };
+      if (action.payload) {
+        console.log("alterou o estado");
+        return {
+          ...state,
+          token: action.payload.token,
+          userId: action.payload.userId
+        };
+      } else {
+        console.log("alterou o estado");
+        return {
+          ...state,
+          token: null,
+          userId: null
+        };
+      }
     case "FORM_INITIED":
       return {
         ...state,
-        username: "",
         email: "",
         password: "",
         confirmPassword: ""

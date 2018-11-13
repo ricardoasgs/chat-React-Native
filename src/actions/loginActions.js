@@ -1,21 +1,24 @@
 import axios from "axios";
 import { AsyncStorage } from "react-native";
+import { ToastStyles } from "react-native-toaster";
 
 import { API_URL } from "../config/constants";
 
-export const changeEmail = event => ({
+import { addToast } from "../actions/toasterActions";
+
+export const changeEmail = value => ({
   type: "EMAIL_CHANGED",
-  payload: event.target.value
+  payload: value
 });
 
-export const changePassword = event => ({
+export const changePassword = value => ({
   type: "PASSWORD_CHANGED",
-  payload: event.target.value
+  payload: value
 });
 
-export const changeConfirmPassword = event => ({
+export const changeConfirmPassword = value => ({
   type: "CONFIRM_PASSWORD_CHANGED",
-  payload: event.target.value
+  payload: value
 });
 
 export const changeForm = form => dispatch =>
@@ -36,12 +39,16 @@ export function login(values) {
     axios
       .post(`${API_URL}/auth/signin`, values)
       .then(res => {
+        console.log(res);
         AsyncStorage.setItem("token", res.data.token);
         AsyncStorage.setItem("userId", res.data._id);
         dispatch({ type: "USER_FETCHED", payload: res.data });
       })
       .catch(e => {
-        e.response.data.errors.forEach(error => console.log("Erro", error));
+        //console.log(e.response.data.error);
+        dispatch(
+          addToast({ text: e.response.data.error, styles: ToastStyles.error })
+        );
       });
   };
 }
@@ -60,26 +67,8 @@ export function signup(values) {
 }
 
 export function logout() {
-  AsyncStorage.removeItem("userId");
-  AsyncStorage.removeItem("token");
-  return { type: "TOKEN_VALIDATED", payload: false };
-}
-
-export function validateToken(token) {
+  AsyncStorage.clear();
   return dispatch => {
-    if (token) {
-      axios
-        .post(`${API_URL}/validateToken`, { token })
-        .then(resp => {
-          if (!resp.data.valid) {
-            AsyncStorage.removeItem("userId");
-            AsyncStorage.removeItem("token");
-          }
-          dispatch({ type: "TOKEN_VALIDATED", payload: resp.data.valid });
-        })
-        .catch(e => dispatch({ type: "TOKEN_VALIDATED", payload: false }));
-    } else {
-      dispatch({ type: "TOKEN_VALIDATED", payload: false });
-    }
+    dispatch([{ type: "USER_FETCHED", payload: false }, initForm()]);
   };
 }
