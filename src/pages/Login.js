@@ -37,11 +37,11 @@ class Login extends Component {
     console.log(token);
 
     if (token) {
-      this.navigateToApp();
+      this.navigateToMain();
     }
   }
 
-  navigateToApp = () => {
+  navigateToMain = () => {
     const resetAction = StackActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: "Main" })]
@@ -72,6 +72,7 @@ class Login extends Component {
             placeholder="Email"
             value={email}
             onChangeText={this.props.changeEmail}
+            textContentType="emailAddress"
           />
           <TextInput
             style={styles.input}
@@ -79,11 +80,17 @@ class Login extends Component {
             value={password}
             onChangeText={this.props.changePassword}
             returnKeyType="send"
-            onSubmitEditing={() => this.props.login({ email, password })}
+            onSubmitEditing={() =>
+              this.props.login({ email, password }, this.props.navigation)
+            }
+            secureTextEntry={true}
+            textContentType="password"
           />
           <TouchableOpacity
             style={styles.button}
-            onPress={() => this.props.login({ email, password })}
+            onPress={() =>
+              this.props.login({ email, password }, this.props.navigation)
+            }
           >
             <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { AsyncStorage } from "react-native";
 import { ToastStyles } from "react-native-toaster";
+import { StackActions, NavigationActions } from "react-navigation";
 
 import { API_URL } from "../config/constants";
 
@@ -34,7 +35,7 @@ export const initForm = () => ({
   type: "FORM_INITIED"
 });
 
-export function login(values) {
+export function login(values, navigation) {
   return dispatch => {
     axios
       .post(`${API_URL}/auth/signin`, values)
@@ -42,7 +43,12 @@ export function login(values) {
         console.log(res);
         AsyncStorage.setItem("token", res.data.token);
         AsyncStorage.setItem("userId", res.data._id);
-        dispatch({ type: "USER_FETCHED", payload: res.data });
+        const resetAction = StackActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: "Main" })]
+        });
+        navigation.dispatch(resetAction);
+        dispatch([{ type: "USER_FETCHED", payload: res.data }]);
       })
       .catch(e => {
         //console.log(e.response.data.error);
@@ -66,9 +72,14 @@ export function signup(values) {
   };
 }
 
-export function logout() {
+export function logout(navigation) {
   AsyncStorage.clear();
+  navigation.navigate("Login");
   return dispatch => {
-    dispatch([{ type: "USER_FETCHED", payload: false }, initForm()]);
+    dispatch([
+      { type: "USER_FETCHED", payload: false },
+      initForm(),
+      NavigationActions.navigate({ routeName: "Login" })
+    ]);
   };
 }

@@ -14,14 +14,12 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "USER_FETCHED":
       if (action.payload) {
-        console.log("alterou o estado");
         return {
           ...state,
           token: action.payload.token,
           userId: action.payload.userId
         };
       } else {
-        console.log("alterou o estado");
         return {
           ...state,
           token: null,

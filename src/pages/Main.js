@@ -1,14 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Button,
-  AsyncStorage
-} from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import { logout } from "../actions/loginActions";
@@ -55,13 +48,13 @@ class Main extends Component {
     )
   });
 
-  logout = () => {
-    this.props.logout();
-  };
-
   componentDidMount() {
     this.props.navigation.setParams({ logout: this.logout });
   }
+
+  logout = () => {
+    this.props.logout(this.props.navigation);
+  };
 
   render() {
     const conversation = {
