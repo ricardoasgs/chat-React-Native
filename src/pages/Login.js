@@ -33,8 +33,9 @@ class Login extends Component {
     this.props.initForm();
 
     const token = await AsyncStorage.getItem("token");
+    //const userId = await AsyncStorage.getItem("userId");
 
-    console.log(token);
+    //console.log(userId);
 
     if (token) {
       this.navigateToMain();

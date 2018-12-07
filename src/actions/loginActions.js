@@ -40,9 +40,9 @@ export function login(values, navigation) {
     axios
       .post(`${API_URL}/auth/signin`, values)
       .then(res => {
-        console.log(res);
+        console.log(res.data);
         AsyncStorage.setItem("token", res.data.token);
-        AsyncStorage.setItem("userId", res.data._id);
+        AsyncStorage.setItem("userId", res.data.user._id);
         const resetAction = StackActions.reset({
           index: 0,
           actions: [NavigationActions.navigate({ routeName: "Main" })]
