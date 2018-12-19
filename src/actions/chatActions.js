@@ -26,8 +26,9 @@ export async function fetchRooms() {
   };
 }
 
-export function selectRoom(chat) {
+export function selectRoom(chat, callback) {
   return dispatch => {
+    callback();
     dispatch({
       type: SELECT_CHAT,
       payload: chat

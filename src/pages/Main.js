@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, FlatList } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import socket from "../config/socket";
 import { fetchRooms } from "../actions/chatActions";
@@ -94,23 +94,27 @@ class Main extends Component {
   };
 
   logout = () => {
-    this.newMessageTest();
+    //this.newMessageTest();
     //this.joinChats();
-    // this.props.logout(this.props.navigation);
+    this.props.logout(this.props.navigation);
   };
 
   render() {
-    console.log(this.props.chats);
+    const { chats } = this.props;
+    console.log(chats);
     return (
-      <View style={styles.container}>
-        {this.props.chats.map(conversation => (
+      <FlatList
+        style={styles.container}
+        data={chats}
+        keyExtractor={chat => chat._id}
+        renderItem={({ item }) => (
           <Conversation
-            conversation={conversation}
+            conversation={item}
             navigate={this.props.navigation.navigate}
-            key={conversation._id}
+            key={item._id}
           />
-        ))}
-      </View>
+        )}
+      />
     );
   }
 }

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { sendMessage } from "../actions/chatActions";
+import { selectRoom } from "../actions/chatActions";
 
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
@@ -10,13 +10,15 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 class Conversation extends Component {
   goToChat = () => {
-    this.props.navigate("Chat");
+    this.props.selectRoom(this.props.conversation, () =>
+      this.props.navigate("Chat")
+    );
   };
 
   render() {
     const { conversation } = this.props;
     const lastConversationIndex = conversation.messages.length - 1;
-    console.log(this.props.userId);
+    //console.log(this.props.userId);
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => {}} style={styles.photo}>
@@ -75,7 +77,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ sendMessage }, dispatch);
+  bindActionCreators({ selectRoom }, dispatch);
 
 export default connect(
   mapStateToProps,

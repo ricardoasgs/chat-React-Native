@@ -6,7 +6,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  FlatList
 } from "react-native";
 
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -14,7 +15,7 @@ import InputBar from "../components/InputBar";
 import Message from "../components/Message";
 
 class Chat extends Component {
-  static navigationOptions = {
+  static navigationOptions = ({ navigation }) => ({
     headerTitle: (
       <View
         style={{
@@ -48,21 +49,28 @@ class Chat extends Component {
         />
       </TouchableOpacity>
     )
-  };
+  });
 
   render() {
+    const { messages } = this.props.chat;
+    const { userId } = this.props;
+    //console.log(userId);
     return (
       <KeyboardAvoidingView style={styles.container} behavior="heigth">
         <View style={styles.viewContainer}>
-          <View style={styles.messagesContainer}>
-            <Message
-              direction="left"
-              text="Teste de um texto grandao hauahuahuahuahauhauahauhauahuahauahauh"
-            />
-            <Message direction="left" text="e ae?" />
-            <Message direction="rigth" text="fala tu" />
-            <Message direction="left" text="suave mano?" />
-          </View>
+          <FlatList
+            style={styles.messagesContainer}
+            data={messages}
+            keyExtractor={message => message._id}
+            renderItem={({ item }) => {
+              console.log(item);
+              return item.userId != userId ? (
+                <Message direction="left" text={item.message} />
+              ) : (
+                <Message direction="right" text={item.message} />
+              );
+            }}
+          />
           <View>
             <InputBar />
           </View>
@@ -88,4 +96,9 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Chat;
+const mapStateToProps = state => ({
+  chat: state.chat.chat,
+  userId: state.login.userId
+});
+
+export default connect(mapStateToProps)(Chat);
