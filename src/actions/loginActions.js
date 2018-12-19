@@ -7,51 +7,17 @@ import { API_URL } from "../config/constants";
 
 import { addToast } from "../actions/toasterActions";
 
-export const changeEmail = value => ({
-  type: "EMAIL_CHANGED",
-  payload: value
-});
-
-export const changePassword = value => ({
-  type: "PASSWORD_CHANGED",
-  payload: value
-});
-
-export const changeConfirmPassword = value => ({
-  type: "CONFIRM_PASSWORD_CHANGED",
-  payload: value
-});
-
-export const changeForm = form => dispatch =>
-  dispatch([
-    {
-      type: "FORM_CHANGED",
-      payload: form
-    },
-    initForm()
-  ]);
-
-export const initForm = () => ({
-  type: "FORM_INITIED"
-});
-
-export function login(values, navigation) {
+export function login(values, callback) {
   return dispatch => {
     axios
       .post(`${API_URL}/auth/signin`, values)
       .then(res => {
-        console.log(res.data);
         AsyncStorage.setItem("token", res.data.token);
         AsyncStorage.setItem("userId", res.data.user._id);
-        const resetAction = StackActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: "Main" })]
-        });
-        navigation.dispatch(resetAction);
+        callback();
         dispatch([{ type: "USER_FETCHED", payload: res.data }]);
       })
       .catch(e => {
-        //console.log(e.response.data.error);
         dispatch(
           addToast({ text: e.response.data.error, styles: ToastStyles.error })
         );
@@ -72,13 +38,20 @@ export function signup(values) {
   };
 }
 
+export async function validate() {
+  const userId = await AsyncStorage.getItem("userId");
+  const token = await AsyncStorage.getItem("token");
+  return dispatch => {
+    dispatch({ type: "USER_VALIDATED", payload: { userId, token } });
+  };
+}
+
 export function logout(navigation) {
   AsyncStorage.clear();
   navigation.navigate("Login");
   return dispatch => {
     dispatch([
       { type: "USER_FETCHED", payload: false },
-      initForm(),
       NavigationActions.navigate({ routeName: "Login" })
     ]);
   };

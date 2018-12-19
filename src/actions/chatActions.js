@@ -31,11 +31,11 @@ export async function fetchRooms() {
   };
 }
 
-export function selectRoom(room) {
+export function selectRoom(chat) {
   return dispatch => {
     dispatch({
       type: SELECT_CHAT,
-      payload: room
+      payload: chat
     });
   };
 }

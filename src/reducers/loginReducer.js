@@ -1,11 +1,6 @@
-import { AsyncStorage } from "react-native";
-
 const INITIAL_STATE = {
-  userId: AsyncStorage.getItem("userId"),
-  token: AsyncStorage.getItem("token"),
-  email: "",
-  password: "",
-  confirmPassword: "",
+  userId: "",
+  token: "",
   validToken: false,
   form: "LOGIN"
 };
@@ -17,7 +12,7 @@ export default (state = INITIAL_STATE, action) => {
         return {
           ...state,
           token: action.payload.token,
-          userId: action.payload.userId
+          userId: action.payload.user._id
         };
       } else {
         return {
@@ -26,32 +21,11 @@ export default (state = INITIAL_STATE, action) => {
           userId: null
         };
       }
-    case "FORM_INITIED":
+    case "USER_VALIDATED":
       return {
         ...state,
-        email: "",
-        password: "",
-        confirmPassword: ""
-      };
-    case "EMAIL_CHANGED":
-      return {
-        ...state,
-        email: action.payload
-      };
-    case "PASSWORD_CHANGED":
-      return {
-        ...state,
-        password: action.payload
-      };
-    case "CONFIRM_PASSWORD_CHANGED":
-      return {
-        ...state,
-        password: action.payload
-      };
-    case "FORM_CHANGED":
-      return {
-        ...state,
-        form: action.payload
+        userId: action.payload.userId,
+        token: action.payload.token
       };
     default: {
       return state;

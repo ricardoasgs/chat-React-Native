@@ -14,33 +14,36 @@ import Toaster from "react-native-toaster";
 import { StackActions, NavigationActions } from "react-navigation";
 
 import { addToast } from "../actions/toasterActions";
-import {
-  changeEmail,
-  changePassword,
-  login,
-  validateToken,
-  initForm
-} from "../actions/loginActions";
+import { login, validate } from "../actions/loginActions";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 
 class Login extends Component {
+  state = {
+    email: "",
+    password: ""
+  };
   static navigationOptions = {
     header: null
   };
 
   async componentDidMount() {
-    this.props.initForm();
-
     const token = await AsyncStorage.getItem("token");
-    //const userId = await AsyncStorage.getItem("userId");
 
-    //console.log(userId);
+    this.props.validate();
 
     if (token) {
       this.navigateToMain();
     }
   }
+
+  changeEmail = email => {
+    this.setState({ email });
+  };
+
+  changePassword = password => {
+    this.setState({ password });
+  };
 
   navigateToMain = () => {
     const resetAction = StackActions.reset({
@@ -51,7 +54,7 @@ class Login extends Component {
   };
 
   render() {
-    const { email, password } = this.props;
+    const { email, password } = this.state;
     return (
       <KeyboardAvoidingView style={styles.container}>
         <Toaster
@@ -72,14 +75,14 @@ class Login extends Component {
             style={styles.input}
             placeholder="Email"
             value={email}
-            onChangeText={this.props.changeEmail}
+            onChangeText={this.changeEmail}
             textContentType="emailAddress"
           />
           <TextInput
             style={styles.input}
             placeholder="Password"
             value={password}
-            onChangeText={this.props.changePassword}
+            onChangeText={this.changePassword}
             returnKeyType="send"
             onSubmitEditing={() =>
               this.props.login({ email, password }, this.props.navigation)
@@ -90,7 +93,7 @@ class Login extends Component {
           <TouchableOpacity
             style={styles.button}
             onPress={() =>
-              this.props.login({ email, password }, this.props.navigation)
+              this.props.login({ email, password }, this.navigateToMain)
             }
           >
             <Text style={styles.buttonText}>Entrar</Text>
@@ -160,10 +163,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    { changeEmail, changePassword, login, validateToken, initForm, addToast },
-    dispatch
-  );
+  bindActionCreators({ login, validate, addToast }, dispatch);
 
 export default connect(
   mapStateToProps,

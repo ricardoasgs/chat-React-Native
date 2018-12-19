@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import io from "socket.io-client";
 
 import { fetchRooms } from "../actions/chatActions";
 
@@ -11,6 +12,8 @@ import { logout } from "../actions/loginActions";
 import Conversation from "../components/Conversation";
 
 import { YellowBox } from "react-native";
+
+const socket = io("http://10.0.2.2:3003", { transports: ["websocket"] });
 
 YellowBox.ignoreWarnings([
   "Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?"
@@ -36,7 +39,7 @@ class Main extends Component {
             color="#fff"
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => alert("This is a button!")}>
+        <TouchableOpacity onPress={navigation.getParam("joinChats")}>
           <Icon
             style={{ marginRight: 20 }}
             name="user-plus"
@@ -57,25 +60,44 @@ class Main extends Component {
   });
 
   componentDidMount() {
+    this.subscribeToEvents();
     this.props.fetchRooms();
-    this.props.navigation.setParams({ logout: this.logout });
+    this.props.navigation.setParams({
+      logout: this.logout,
+      joinChats: this.joinChats
+    });
   }
 
-  componentDidUpdate() {}
+  subscribeToEvents = () => {
+    socket.on("connect", () => {
+      console.log("Conectado!!!");
+      this.joinChats();
+    });
 
-  // subscribeToEvents = async () => {
-  //   const userId = await AsyncStorage.getItem("userId");
-  //   console.log(userId);
-  //   const socket = io("http://10.0.2.2:3003", { transports: ["websocket"] });
+    socket.on("newMessage", data => {
+      console.log(data);
+      this.props.fetchRooms();
+    });
+    this.joinChats();
+  };
 
-  //   socket.emit("getChats", userId);
-  //   socket.on("chats", data => {
-  //     console.log(data);
-  //   });
-  // };
+  joinChats = () => {
+    //console.log(this.props.chats[0]);
+  };
+
+  newMessageTest = () => {
+    socket.emit(
+      "newMessage",
+      "5beb202c9992993e78da6a0e",
+      "5c0af8524721522518cf6583",
+      "Ta bugado Mano :/"
+    );
+  };
 
   logout = () => {
-    this.props.logout(this.props.navigation);
+    this.newMessageTest();
+    //this.joinChats();
+    // this.props.logout(this.props.navigation);
   };
 
   render() {
