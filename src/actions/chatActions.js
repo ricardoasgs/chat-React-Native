@@ -4,7 +4,7 @@ import { StackActions, NavigationActions } from "react-navigation";
 
 import { addToast } from "../actions/toasterActions";
 
-import io from "socket.io-client";
+import socket from "../config/socket";
 import {
   SELECT_CHAT,
   FETCH_CHATS,
@@ -12,17 +12,12 @@ import {
   USER_STOPPED_TYPING
 } from "./types";
 
-const socket = io.connect(
-  "http://10.0.2.2:3003",
-  { transports: ["websocket"] }
-);
-
 export async function fetchRooms() {
   const userId = await AsyncStorage.getItem("userId");
   return dispatch => {
     socket.emit("getChats", userId);
     socket.on("chats", data => {
-      //console.log(data);
+      console.log(data);
       dispatch({
         type: FETCH_CHATS,
         payload: data

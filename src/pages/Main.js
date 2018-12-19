@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import io from "socket.io-client";
-
+import socket from "../config/socket";
 import { fetchRooms } from "../actions/chatActions";
 
 import { logout } from "../actions/loginActions";
@@ -12,8 +11,6 @@ import { logout } from "../actions/loginActions";
 import Conversation from "../components/Conversation";
 
 import { YellowBox } from "react-native";
-
-const socket = io("http://10.0.2.2:3003", { transports: ["websocket"] });
 
 YellowBox.ignoreWarnings([
   "Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?"
@@ -39,7 +36,7 @@ class Main extends Component {
             color="#fff"
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={navigation.getParam("joinChats")}>
+        <TouchableOpacity onPress={() => console.log("Zika mesmo")}>
           <Icon
             style={{ marginRight: 20 }}
             name="user-plus"
@@ -66,31 +63,33 @@ class Main extends Component {
       logout: this.logout,
       joinChats: this.joinChats
     });
+    this.joinChats();
   }
 
   subscribeToEvents = () => {
     socket.on("connect", () => {
       console.log("Conectado!!!");
-      this.joinChats();
     });
 
     socket.on("newMessage", data => {
       console.log(data);
       this.props.fetchRooms();
     });
-    this.joinChats();
   };
 
   joinChats = () => {
-    //console.log(this.props.chats[0]);
+    this.props.chats.map(chat => {
+      console.log(chat);
+      socket.emit("joinChats", chat);
+    });
   };
 
   newMessageTest = () => {
     socket.emit(
       "newMessage",
-      "5beb202c9992993e78da6a0e",
       "5c0af8524721522518cf6583",
-      "Ta bugado Mano :/"
+      "5beb202c9992993e78da6a0e",
+      "Teste"
     );
   };
 
