@@ -1,23 +1,23 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { updateRoom } from "../actions/chatActions";
 import socket from "../config/socket";
 import {
-  Text,
+  Keyboard,
   View,
   StyleSheet,
-  TouchableHighlight,
+  TouchableOpacity,
   TextInput
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 class InputBar extends Component {
   state = {
-    text: ""
+    text: "",
+    emoji: false
   };
 
   sendMessage = () => {
+    Keyboard.dismiss();
     const { userId, address } = this.props;
     const { text } = this.state;
     socket.emit("newMessage", userId, address._id, text);
@@ -27,6 +27,12 @@ class InputBar extends Component {
   render() {
     return (
       <View style={styles.inputBar}>
+        <TouchableOpacity
+          style={styles.emojiButton}
+          onPress={() => this.setState({ emoji: true })}
+        >
+          <Icon name="smile-o" size={30} color="#FF6600" />
+        </TouchableOpacity>
         <TextInput
           style={styles.textBox}
           placeholder="Digite aqui..."
@@ -35,12 +41,12 @@ class InputBar extends Component {
           onChangeText={text => this.setState({ text })}
           value={this.state.text}
         />
-        <TouchableHighlight
+        <TouchableOpacity
           style={styles.sendButton}
           onPress={() => this.sendMessage()}
         >
           <Icon name="arrow-circle-right" size={42} color="#FF6600" />
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -59,8 +65,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: "gray",
     flex: 1,
-    fontSize: 16,
-    paddingHorizontal: 10
+    fontSize: 18,
+    paddingHorizontal: 15
   },
 
   sendButton: {
@@ -71,6 +77,10 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     borderRadius: 5,
     backgroundColor: "#FAFAFA"
+  },
+  emojiButton: {
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 

@@ -8,7 +8,7 @@ import {
   FlatList
 } from "react-native";
 
-import { selectAddress, fetchRooms, updateRoom } from "../actions/chatActions";
+import { selectAddress, updateRoom } from "../actions/chatActions";
 import socket from "../config/socket";
 import Icon from "react-native-vector-icons/FontAwesome";
 import InputBar from "../components/InputBar";
@@ -37,10 +37,13 @@ class Chat extends Component {
     )
   });
 
+  state = {
+    render: false
+  };
+
   getAddresse = () => {
     const { chat } = this.props;
     const { userId } = this.props;
-    //console.log(chat);
     if (chat.users[0]._id === userId) {
       this.props.dispatch(selectAddress(chat.users[1]));
     } else {
@@ -55,7 +58,9 @@ class Chat extends Component {
 
   subscribeToEvents = () => {
     socket.on("newMessage", data => {
+      this.setState({ render: true });
       const newChat = this.props.chat;
+      newChat.messages.reverse();
       newChat.messages.push(data);
       this.props.dispatch(updateRoom(newChat));
     });
@@ -64,18 +69,22 @@ class Chat extends Component {
   render() {
     const { messages } = this.props.chat;
     const { userId } = this.props;
+    const { render } = this.state;
     //console.log(userId);
     return (
       <KeyboardAvoidingView style={styles.container} behavior="heigth">
         <View style={styles.viewContainer}>
           <FlatList
+            inverted
             style={styles.messagesContainer}
+            initialNumToRender={9}
             data={messages}
-            ref={ref => (this.messages = ref)}
-            onContentSizeChange={() =>
-              this.messages.scrollToEnd({ animated: true })
-            }
-            onLayout={() => this.messages.scrollToEnd()}
+            extraData={render}
+            // ref={ref => (this.messages = ref)}
+            // onContentSizeChange={() =>
+            //   this.messages.scrollToEnd({ animated: true })
+            // }
+            // onLayout={() => this.messages.scrollToEnd()}
             keyExtractor={message => message._id}
             renderItem={({ item }) => {
               return item.userId != userId ? (

@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "flex-start",
-    padding: 15,
+    padding: 10,
     borderBottomWidth: 1,
     borderColor: "#eee"
   },
@@ -61,11 +61,12 @@ const styles = StyleSheet.create({
   },
 
   photo: {
-    marginLeft: 20
+    marginLeft: 10
   },
 
   chatIndex: {
-    marginLeft: 25
+    flex: 1,
+    marginLeft: 15
   }
 });
 

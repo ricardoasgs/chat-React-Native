@@ -28,6 +28,7 @@ export async function fetchRooms() {
 }
 
 export function selectRoom(chat, callback) {
+  chat.messages = chat.messages.reverse();
   return dispatch => {
     dispatch({
       type: SELECT_CHAT,
@@ -38,6 +39,7 @@ export function selectRoom(chat, callback) {
 }
 
 export function updateRoom(chat) {
+  chat.messages = chat.messages.reverse();
   console.log(chat);
   return dispatch => {
     dispatch({
