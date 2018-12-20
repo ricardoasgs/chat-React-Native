@@ -34,9 +34,10 @@ const styles = StyleSheet.create({
   messageBubble: {
     flex: 1,
     borderRadius: 5,
-    marginTop: 8,
+    marginTop: 5,
     marginRight: 10,
     marginLeft: 10,
+    marginBottom: 6,
     paddingHorizontal: 10,
     paddingVertical: 10,
     flexDirection: "row",

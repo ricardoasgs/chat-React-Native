@@ -10,8 +10,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 class Conversation extends Component {
   goToChat = () => {
-    this.props.selectRoom(this.props.conversation, () =>
-      this.props.navigate("Chat")
+    this.props.dispatch(
+      selectRoom(this.props.conversation, () => this.props.navigate("Chat"))
     );
   };
 
@@ -76,10 +76,4 @@ const mapStateToProps = state => ({
   chat: state.chat.chat
 });
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({ selectRoom }, dispatch);
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Conversation);
+export default connect(mapStateToProps)(Conversation);

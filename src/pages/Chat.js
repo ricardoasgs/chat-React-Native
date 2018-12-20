@@ -1,37 +1,23 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
   FlatList
 } from "react-native";
 
+import { selectAddress, fetchRooms, updateRoom } from "../actions/chatActions";
+import socket from "../config/socket";
 import Icon from "react-native-vector-icons/FontAwesome";
 import InputBar from "../components/InputBar";
 import Message from "../components/Message";
+import ChatHeaderTitle from "../components/ChatHeaderTitle";
 
 class Chat extends Component {
   static navigationOptions = ({ navigation }) => ({
-    headerTitle: (
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          alignItems: "center"
-        }}
-      >
-        <TouchableOpacity onPress={() => {}}>
-          <Icon name="user-circle" size={40} color="#fff" />
-        </TouchableOpacity>
-        <Text style={{ marginLeft: 10, fontSize: 20, color: "#fff" }}>
-          UserTest
-        </Text>
-      </View>
-    ),
+    headerTitle: <ChatHeaderTitle />,
     headerStyle: {
       backgroundColor: "#FF6600"
     },
@@ -51,6 +37,30 @@ class Chat extends Component {
     )
   });
 
+  getAddresse = () => {
+    const { chat } = this.props;
+    const { userId } = this.props;
+    //console.log(chat);
+    if (chat.users[0]._id === userId) {
+      this.props.dispatch(selectAddress(chat.users[1]));
+    } else {
+      this.props.dispatch(selectAddress(chat.users[0]));
+    }
+  };
+
+  componentDidMount() {
+    this.getAddresse();
+    this.subscribeToEvents();
+  }
+
+  subscribeToEvents = () => {
+    socket.on("newMessage", data => {
+      const newChat = this.props.chat;
+      newChat.messages.push(data);
+      this.props.dispatch(updateRoom(newChat));
+    });
+  };
+
   render() {
     const { messages } = this.props.chat;
     const { userId } = this.props;
@@ -61,9 +71,13 @@ class Chat extends Component {
           <FlatList
             style={styles.messagesContainer}
             data={messages}
+            ref={ref => (this.messages = ref)}
+            onContentSizeChange={() =>
+              this.messages.scrollToEnd({ animated: true })
+            }
+            onLayout={() => this.messages.scrollToEnd()}
             keyExtractor={message => message._id}
             renderItem={({ item }) => {
-              console.log(item);
               return item.userId != userId ? (
                 <Message direction="left" text={item.message} />
               ) : (
@@ -83,7 +97,7 @@ class Chat extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF"
+    backgroundColor: "#F1F0F3"
   },
   viewContainer: {
     flex: 1,
@@ -91,8 +105,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   messagesContainer: {
-    flex: 10,
-    backgroundColor: "#F1F0F3"
+    paddingVertical: 0
   }
 });
 

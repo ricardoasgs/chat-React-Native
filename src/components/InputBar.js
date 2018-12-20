@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { updateRoom } from "../actions/chatActions";
+import socket from "../config/socket";
 import {
   Text,
   View,
@@ -8,9 +12,16 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-export default class InputBar extends Component {
+class InputBar extends Component {
   state = {
-    text: "Teste"
+    text: ""
+  };
+
+  sendMessage = () => {
+    const { userId, address } = this.props;
+    const { text } = this.state;
+    socket.emit("newMessage", userId, address._id, text);
+    this.setState({ text: "" });
   };
 
   render() {
@@ -18,6 +29,7 @@ export default class InputBar extends Component {
       <View style={styles.inputBar}>
         <TextInput
           style={styles.textBox}
+          placeholder="Digite aqui..."
           multiline={true}
           defaultHeight={50}
           onChangeText={text => this.setState({ text })}
@@ -25,7 +37,7 @@ export default class InputBar extends Component {
         />
         <TouchableHighlight
           style={styles.sendButton}
-          onPress={() => console.log("Teste")}
+          onPress={() => this.sendMessage()}
         >
           <Icon name="arrow-circle-right" size={42} color="#FF6600" />
         </TouchableHighlight>
@@ -39,8 +51,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingLeft: 20,
-    paddingVertical: 1,
-    backgroundColor: "#F1F0F3"
+    paddingBottom: 1,
+    backgroundColor: "#FAFAFA"
   },
 
   textBox: {
@@ -58,6 +70,14 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     paddingRight: 10,
     borderRadius: 5,
-    backgroundColor: "#F1F0F3"
+    backgroundColor: "#FAFAFA"
   }
 });
+
+const mapStateToProps = state => ({
+  userId: state.login.userId,
+  address: state.chat.address,
+  chat: state.chat.chat
+});
+
+export default connect(mapStateToProps)(InputBar);

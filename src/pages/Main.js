@@ -63,7 +63,7 @@ class Main extends Component {
       logout: this.logout,
       joinChats: this.joinChats
     });
-    this.joinChats();
+    //this.joinChats();
   }
 
   subscribeToEvents = () => {
@@ -79,29 +79,19 @@ class Main extends Component {
 
   joinChats = () => {
     this.props.chats.map(chat => {
-      console.log(chat);
       socket.emit("joinChats", chat);
     });
   };
 
-  newMessageTest = () => {
-    socket.emit(
-      "newMessage",
-      "5c0af8524721522518cf6583",
-      "5beb202c9992993e78da6a0e",
-      "Teste"
-    );
-  };
-
   logout = () => {
     //this.newMessageTest();
-    //this.joinChats();
-    this.props.logout(this.props.navigation);
+    this.joinChats();
+    //this.props.logout(this.props.navigation);
   };
 
   render() {
     const { chats } = this.props;
-    console.log(chats);
+    //console.log(chats);
     return (
       <FlatList
         style={styles.container}
@@ -134,7 +124,8 @@ const mapStateToProps = state => ({
   token: state.login.token,
   userId: state.login.userId,
   toastMessage: state.toaster.message,
-  chats: state.chat.chats
+  chats: state.chat.chats,
+  chat: state.chat.chat
 });
 
 const mapDispatchToProps = dispatch =>
