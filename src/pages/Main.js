@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { View, StyleSheet, TouchableOpacity, FlatList } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import { StyleSheet, FlatList } from "react-native";
+
 import socket from "../config/socket";
-import { fetchRooms } from "../actions/chatActions";
-
-import { logout } from "../actions/loginActions";
-
+import { fetchRooms, joinChats } from "../actions/chatActions";
 import Conversation from "../components/Conversation";
+import MainHeaderRight from "../components/MainHeaderRight";
 
 class Main extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -20,44 +17,13 @@ class Main extends Component {
     headerTitleStyle: {
       fontWeight: "bold"
     },
-    headerRight: (
-      <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity onPress={() => console.log("This is a button!")}>
-          <Icon
-            style={{ marginRight: 20 }}
-            name="search"
-            size={20}
-            color="#fff"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log("Zika mesmo")}>
-          <Icon
-            style={{ marginRight: 20 }}
-            name="user-plus"
-            size={20}
-            color="#fff"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={navigation.getParam("logout")}>
-          <Icon
-            style={{ marginRight: 20 }}
-            name="plus-square"
-            size={20}
-            color="#fff"
-          />
-        </TouchableOpacity>
-      </View>
-    )
+    headerRight: <MainHeaderRight />
   });
 
   componentDidMount() {
     this.subscribeToEvents();
-    this.props.fetchRooms();
-    this.props.navigation.setParams({
-      logout: this.logout,
-      joinChats: this.joinChats
-    });
-    //this.joinChats();
+    this.props.dispatch(fetchRooms());
+    joinChats(this.props.chats);
   }
 
   subscribeToEvents = () => {
@@ -67,25 +33,16 @@ class Main extends Component {
 
     socket.on("newMessage", data => {
       console.log(data);
-      this.props.fetchRooms();
+      this.props.dispatch(fetchRooms());
     });
   };
 
-  joinChats = () => {
-    this.props.chats.map(chat => {
-      socket.emit("joinChats", chat);
-    });
-  };
-
-  logout = () => {
-    //this.newMessageTest();
-    this.joinChats();
-    //this.props.logout(this.props.navigation);
-  };
+  // logout = () => {
+  //   this.props.dispatch(logout(this.props.navigation));
+  // };
 
   render() {
     const { chats } = this.props;
-    //console.log(chats);
     return (
       <FlatList
         style={styles.container}
@@ -115,17 +72,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  token: state.login.token,
-  userId: state.login.userId,
   toastMessage: state.toaster.message,
-  chats: state.chat.chats,
-  chat: state.chat.chat
+  chats: state.chat.chats
 });
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({ logout, fetchRooms }, dispatch);
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Main);
+export default connect(mapStateToProps)(Main);

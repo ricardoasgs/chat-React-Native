@@ -8,7 +8,7 @@ import {
   FlatList
 } from "react-native";
 
-import { selectAddress, updateRoom } from "../actions/chatActions";
+import { selectRecipient, updateRoom } from "../actions/chatActions";
 import socket from "../config/socket";
 import Icon from "react-native-vector-icons/FontAwesome";
 import InputBar from "../components/InputBar";
@@ -41,18 +41,18 @@ class Chat extends Component {
     render: false
   };
 
-  getAddresse = () => {
+  getRecipient = () => {
     const { chat } = this.props;
     const { userId } = this.props;
     if (chat.users[0]._id === userId) {
-      this.props.dispatch(selectAddress(chat.users[1]));
+      this.props.dispatch(selectRecipient(chat.users[1]));
     } else {
-      this.props.dispatch(selectAddress(chat.users[0]));
+      this.props.dispatch(selectRecipient(chat.users[0]));
     }
   };
 
   componentDidMount() {
-    this.getAddresse();
+    this.getRecipient();
     this.subscribeToEvents();
   }
 
@@ -63,6 +63,7 @@ class Chat extends Component {
       newChat.messages.reverse();
       newChat.messages.push(data);
       this.props.dispatch(updateRoom(newChat));
+      this.setState({ render: false });
     });
   };
 
@@ -70,7 +71,7 @@ class Chat extends Component {
     const { messages } = this.props.chat;
     const { userId } = this.props;
     const { render } = this.state;
-    //console.log(userId);
+    console.log(render);
     return (
       <KeyboardAvoidingView style={styles.container} behavior="heigth">
         <View style={styles.viewContainer}>
@@ -80,11 +81,6 @@ class Chat extends Component {
             initialNumToRender={9}
             data={messages}
             extraData={render}
-            // ref={ref => (this.messages = ref)}
-            // onContentSizeChange={() =>
-            //   this.messages.scrollToEnd({ animated: true })
-            // }
-            // onLayout={() => this.messages.scrollToEnd()}
             keyExtractor={message => message._id}
             renderItem={({ item }) => {
               return item.userId != userId ? (

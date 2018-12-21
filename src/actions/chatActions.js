@@ -7,7 +7,7 @@ import { addToast } from "../actions/toasterActions";
 import socket from "../config/socket";
 import {
   SELECT_CHAT,
-  SELECT_ADDRESS,
+  SELECT_RECIPIENT,
   FETCH_CHATS,
   USER_TYPING,
   USER_STOPPED_TYPING
@@ -18,13 +18,19 @@ export async function fetchRooms() {
   return dispatch => {
     socket.emit("getChats", userId);
     socket.on("chats", data => {
-      //console.log(data);
+      joinChats(data);
       dispatch({
         type: FETCH_CHATS,
         payload: data
       });
     });
   };
+}
+
+export function joinChats(chats) {
+  chats.map(chat => {
+    socket.emit("joinChats", chat);
+  });
 }
 
 export function selectRoom(chat, callback) {
@@ -49,11 +55,11 @@ export function updateRoom(chat) {
   };
 }
 
-export function selectAddress(address) {
+export function selectRecipient(recipient) {
   return dispatch => {
     dispatch({
-      type: SELECT_ADDRESS,
-      payload: address
+      type: SELECT_RECIPIENT,
+      payload: recipient
     });
   };
 }

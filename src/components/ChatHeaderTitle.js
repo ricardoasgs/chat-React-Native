@@ -10,7 +10,7 @@ class ChatHeaderTitle extends Component {
         <TouchableOpacity onPress={() => {}}>
           <Icon name="user-circle" size={40} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.textTitle}>{this.props.address.name}</Text>
+        <Text style={styles.textTitle}>{this.props.recipient.name}</Text>
       </View>
     );
   }
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  address: state.chat.address
+  recipient: state.chat.recipient
 });
 
 export default connect(mapStateToProps)(ChatHeaderTitle);

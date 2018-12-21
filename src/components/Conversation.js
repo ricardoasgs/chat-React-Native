@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 import { selectRoom } from "../actions/chatActions";
-
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-
-import Icon from "react-native-vector-icons/FontAwesome";
 
 class Conversation extends Component {
   goToChat = () => {
@@ -15,10 +12,18 @@ class Conversation extends Component {
     );
   };
 
+  getLastMessageUser = () => {
+    const { conversation } = this.props;
+    const lastConversationIndex = conversation.messages.length - 1;
+    return conversation.messages[lastConversationIndex].userId ==
+      this.props.userId
+      ? "Você"
+      : conversation.users[1].name;
+  };
+
   render() {
     const { conversation } = this.props;
     const lastConversationIndex = conversation.messages.length - 1;
-    //console.log(this.props.userId);
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => {}} style={styles.photo}>
@@ -28,11 +33,8 @@ class Conversation extends Component {
         <TouchableOpacity onPress={this.goToChat} style={styles.chatIndex}>
           <Text style={styles.author}>{conversation.users[1].name}</Text>
           <Text style={styles.lastMessage}>
-            {conversation.messages[lastConversationIndex].userId ==
-            this.props.userId
-              ? "Você"
-              : conversation.users[1].name}
-            : {conversation.messages[lastConversationIndex].message}
+            {this.getLastMessageUser()} :{" "}
+            {conversation.messages[lastConversationIndex].message}
           </Text>
         </TouchableOpacity>
       </View>

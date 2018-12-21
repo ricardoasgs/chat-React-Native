@@ -18,9 +18,9 @@ class InputBar extends Component {
 
   sendMessage = () => {
     Keyboard.dismiss();
-    const { userId, address } = this.props;
+    const { userId, recipient } = this.props;
     const { text } = this.state;
-    socket.emit("newMessage", userId, address._id, text);
+    socket.emit("newMessage", userId, recipient._id, text);
     this.setState({ text: "" });
   };
 
@@ -45,7 +45,7 @@ class InputBar extends Component {
           style={styles.sendButton}
           onPress={() => this.sendMessage()}
         >
-          <Icon name="arrow-circle-right" size={42} color="#FF6600" />
+          <Icon name="caret-right" size={50} color="#FF6600" />
         </TouchableOpacity>
       </View>
     );
@@ -72,9 +72,8 @@ const styles = StyleSheet.create({
   sendButton: {
     justifyContent: "center",
     alignItems: "center",
-    paddingLeft: 5,
     marginLeft: 3,
-    paddingRight: 10,
+    paddingRight: 18,
     borderRadius: 5,
     backgroundColor: "#FAFAFA"
   },
@@ -86,7 +85,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   userId: state.login.userId,
-  address: state.chat.address,
+  recipient: state.chat.recipient,
   chat: state.chat.chat
 });
 

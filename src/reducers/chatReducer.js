@@ -1,6 +1,6 @@
 import {
   SELECT_CHAT,
-  SELECT_ADDRESS,
+  SELECT_RECIPIENT,
   FETCH_CHATS,
   USER_TYPING,
   USER_STOPPED_TYPING
@@ -8,7 +8,7 @@ import {
 
 const INITIAL_STATE = {
   chat: {},
-  address: {},
+  recipient: {},
   chats: [],
   messages: [],
   userTyping: null,
@@ -19,8 +19,8 @@ export default function(state = INITIAL_STATE, action) {
   switch (action.type) {
     case SELECT_CHAT:
       return { ...state, chat: action.payload };
-    case SELECT_ADDRESS:
-      return { ...state, address: action.payload };
+    case SELECT_RECIPIENT:
+      return { ...state, recipient: action.payload };
     case FETCH_CHATS:
       return { ...state, chats: action.payload };
     case USER_TYPING:
