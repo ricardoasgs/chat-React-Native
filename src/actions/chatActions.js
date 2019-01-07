@@ -18,7 +18,7 @@ export async function fetchRooms() {
   return dispatch => {
     socket.emit("getChats", userId);
     socket.on("chats", data => {
-      joinChats(data);
+      //joinChats(data);
       dispatch({
         type: FETCH_CHATS,
         payload: data
@@ -27,11 +27,11 @@ export async function fetchRooms() {
   };
 }
 
-export function joinChats(chats) {
-  chats.map(chat => {
-    socket.emit("joinChats", chat);
-  });
-}
+// export function joinChats(chats) {
+//   chats.map(chat => {
+//     socket.emit("joinChats", chat);
+//   });
+// }
 
 export function selectRoom(chat, callback) {
   chat.messages = chat.messages.reverse();

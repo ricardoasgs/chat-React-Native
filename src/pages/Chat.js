@@ -72,6 +72,7 @@ class Chat extends Component {
     const { userId } = this.props;
     const { render } = this.state;
     console.log(render);
+    console.log(messages);
     return (
       <KeyboardAvoidingView style={styles.container} behavior="heigth">
         <View style={styles.viewContainer}>

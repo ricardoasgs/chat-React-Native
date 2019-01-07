@@ -9,6 +9,7 @@ import {
   TextInput
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 class InputBar extends Component {
   state = {
@@ -17,6 +18,7 @@ class InputBar extends Component {
   };
 
   sendMessage = () => {
+    console.log("mandou mensagem");
     Keyboard.dismiss();
     const { userId, recipient } = this.props;
     const { text } = this.state;
@@ -45,7 +47,7 @@ class InputBar extends Component {
           style={styles.sendButton}
           onPress={() => this.sendMessage()}
         >
-          <Icon name="caret-right" size={50} color="#FF6600" />
+          <Ionicons name="md-send" size={35} color="#FF6600" />
         </TouchableOpacity>
       </View>
     );

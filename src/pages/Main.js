@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { StyleSheet, FlatList } from "react-native";
 
 import socket from "../config/socket";
-import { fetchRooms, joinChats } from "../actions/chatActions";
+import { fetchRooms } from "../actions/chatActions";
 import Conversation from "../components/Conversation";
 import MainHeaderRight from "../components/MainHeaderRight";
 
@@ -23,7 +23,7 @@ class Main extends Component {
   componentDidMount() {
     this.subscribeToEvents();
     this.props.dispatch(fetchRooms());
-    joinChats(this.props.chats);
+    // joinChats(this.props.chats);
   }
 
   subscribeToEvents = () => {
