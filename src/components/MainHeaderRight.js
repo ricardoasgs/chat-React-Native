@@ -1,6 +1,9 @@
 import React from "react";
+import { connect } from "react-redux";
 import { View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+
+import { logout } from "../actions/loginActions";
 
 const MainHeaderRight = props => {
   return (
@@ -21,7 +24,7 @@ const MainHeaderRight = props => {
           color="#fff"
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log("Teste")}>
+      <TouchableOpacity onPress={() => props.dispatch(logout(props))}>
         <Icon
           style={{ marginRight: 20 }}
           name="plus-square"
@@ -33,4 +36,4 @@ const MainHeaderRight = props => {
   );
 };
 
-export default MainHeaderRight;
+export default connect(null)(MainHeaderRight);

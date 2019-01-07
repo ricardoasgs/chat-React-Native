@@ -37,10 +37,6 @@ class Main extends Component {
     });
   };
 
-  // logout = () => {
-  //   this.props.dispatch(logout(this.props.navigation));
-  // };
-
   render() {
     const { chats } = this.props;
     return (

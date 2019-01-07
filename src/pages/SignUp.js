@@ -7,11 +7,9 @@ import {
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
-  StyleSheet,
-  AsyncStorage
+  StyleSheet
 } from "react-native";
 import Toaster from "react-native-toaster";
-import { StackActions, NavigationActions } from "react-navigation";
 
 import { addToast } from "../actions/toasterActions";
 import { login, validate } from "../actions/loginActions";
@@ -27,15 +25,9 @@ class Login extends Component {
     header: null
   };
 
-  async componentDidMount() {
-    const token = await AsyncStorage.getItem("token");
-
-    this.props.validate();
-
-    if (token) {
-      this.navigateToMain();
-    }
-  }
+  changeName = name => {
+    this.setState({ name });
+  };
 
   changeEmail = email => {
     this.setState({ email });
@@ -45,16 +37,21 @@ class Login extends Component {
     this.setState({ password });
   };
 
-  navigateToMain = () => {
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: "Main" })]
-    });
-    this.props.navigation.dispatch(resetAction);
+  changeConfirmPassword = confirmPassword => {
+    this.setState({ confirmPassword });
+  };
+
+  validate = () => {
+    const { password, confirmPassword } = this.state;
+    if (password != confirmPassword) {
+      //lançar toaster
+    }
+    //signup
+    //this.props.login({ email, password }, this.props.navigation);
   };
 
   render() {
-    const { email, password } = this.state;
+    const { name, email, password, confirmPassword } = this.state;
     return (
       <KeyboardAvoidingView style={styles.container}>
         <Toaster
@@ -73,6 +70,12 @@ class Login extends Component {
           </View>
           <TextInput
             style={styles.input}
+            placeholder="Name"
+            value={name}
+            onChangeText={this.changeName}
+          />
+          <TextInput
+            style={styles.input}
             placeholder="Email"
             value={email}
             onChangeText={this.changeEmail}
@@ -83,27 +86,29 @@ class Login extends Component {
             placeholder="Password"
             value={password}
             onChangeText={this.changePassword}
+            secureTextEntry={true}
+            textContentType="password"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password Confirmation"
+            value={confirmPassword}
+            onChangeText={this.changeConfirmPassword}
             returnKeyType="send"
-            onSubmitEditing={() =>
-              this.props.login({ email, password }, this.props.navigation)
-            }
+            onSubmitEditing={() => this.validate()}
             secureTextEntry={true}
             textContentType="password"
           />
           <TouchableOpacity
             style={styles.button}
-            onPress={() =>
-              this.props.login({ email, password }, this.navigateToMain)
-            }
+            onPress={() => this.validate()}
           >
-            <Text style={styles.buttonText}>Entrar</Text>
+            <Text style={styles.buttonText}>Cadastrar</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("SignUp")}
+            onPress={() => this.props.navigation.navigate("Login")}
           >
-            <Text style={styles.signUpText}>
-              Não possui uma conta? Cadastre-se!
-            </Text>
+            <Text style={styles.signUpText}>Já possui uma conta? Entre!</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
