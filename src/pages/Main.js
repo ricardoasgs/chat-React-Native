@@ -17,7 +17,7 @@ class Main extends Component {
     headerTitleStyle: {
       fontWeight: "bold"
     },
-    headerRight: <MainHeaderRight />
+    headerRight: <MainHeaderRight navigation={navigation} />
   });
 
   componentDidMount() {
@@ -39,7 +39,8 @@ class Main extends Component {
 
   render() {
     const { chats } = this.props;
-    return (
+
+    return chats.length < 1 ? (
       <FlatList
         style={styles.container}
         data={chats}
@@ -52,7 +53,7 @@ class Main extends Component {
           />
         )}
       />
-    );
+    ) : null;
   }
 }
 

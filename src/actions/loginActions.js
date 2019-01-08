@@ -25,15 +25,17 @@ export function login(values, callback) {
   };
 }
 
-export function signup(values) {
+export function signup(values, navigation) {
   return dispatch => {
     axios
-      .post(`${API_URL}/signup`, values)
+      .post(`${API_URL}/auth/signup`, values)
       .then(res => {
-        dispatch({ type: "USER_FETCHED", payload: res.data });
+        navigation.navigate("Login");
+        dispatch({ type: "USER_REGISTRED", payload: res.data });
+        addToast({ text: "Usuário Registrado!", styles: ToastStyles.success });
       })
       .catch(e => {
-        e.response.data.errors.forEach(error => console.log("Erro", error));
+        addToast({ text: e.response.data.error, styles: ToastStyles.error });
       });
   };
 }
@@ -48,11 +50,12 @@ export async function validate() {
 
 export function logout(navigation) {
   AsyncStorage.clear();
-  navigation.navigate("Login");
+  const resetAction = StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({ routeName: "Login" })]
+  });
+  navigation.dispatch(resetAction);
   return dispatch => {
-    dispatch([
-      { type: "USER_FETCHED", payload: false },
-      NavigationActions.navigate({ routeName: "Login" })
-    ]);
+    dispatch({ type: "USER_FETCHED", payload: false });
   };
 }

@@ -24,7 +24,9 @@ const MainHeaderRight = props => {
           color="#fff"
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => props.dispatch(logout(props))}>
+      <TouchableOpacity
+        onPress={() => props.dispatch(logout(props.navigation))}
+      >
         <Icon
           style={{ marginRight: 20 }}
           name="plus-square"

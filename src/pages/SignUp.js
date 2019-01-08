@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import {
   View,
   Text,
@@ -9,14 +8,14 @@ import {
   KeyboardAvoidingView,
   StyleSheet
 } from "react-native";
-import Toaster from "react-native-toaster";
+import Toaster, { ToastStyles } from "react-native-toaster";
 
 import { addToast } from "../actions/toasterActions";
-import { login, validate } from "../actions/loginActions";
+import { signup } from "../actions/loginActions";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 
-class Login extends Component {
+class SignUp extends Component {
   state = {
     email: "",
     password: ""
@@ -42,12 +41,18 @@ class Login extends Component {
   };
 
   validate = () => {
-    const { password, confirmPassword } = this.state;
+    const { name, email, password, confirmPassword } = this.state;
     if (password != confirmPassword) {
       //lançar toaster
+      return this.props.dispatch(
+        addToast({ text: "Senha não confere", styles: ToastStyles.warning })
+      );
     }
+
     //signup
-    //this.props.login({ email, password }, this.props.navigation);
+    this.props.dispatch(
+      signup({ name, email, password }, this.props.navigation)
+    );
   };
 
   render() {
@@ -56,7 +61,7 @@ class Login extends Component {
       <KeyboardAvoidingView style={styles.container}>
         <Toaster
           message={this.props.toastMessage}
-          onShow={() => this.props.addToast(null)}
+          onShow={() => this.props.dispatch(addToast(null))}
         />
         <View style={styles.content}>
           <View style={styles.logoContainer}>
@@ -173,18 +178,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  token: state.login.token,
-  userId: state.login.userId,
-  email: state.login.email,
-  password: state.login.password,
-  confirmPassword: state.login.confirmPassword,
   toastMessage: state.toaster.message
 });
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({ login, validate, addToast }, dispatch);
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
+export default connect(mapStateToProps)(SignUp);

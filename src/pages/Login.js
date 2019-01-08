@@ -85,7 +85,7 @@ class Login extends Component {
             onChangeText={this.changePassword}
             returnKeyType="send"
             onSubmitEditing={() =>
-              this.props.login({ email, password }, this.props.navigation)
+              this.props.login({ email, password }, this.navigateToMain)
             }
             secureTextEntry={true}
             textContentType="password"
@@ -170,9 +170,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   token: state.login.token,
   userId: state.login.userId,
-  email: state.login.email,
-  password: state.login.password,
-  confirmPassword: state.login.confirmPassword,
   toastMessage: state.toaster.message
 });
 

@@ -1,8 +1,7 @@
 const INITIAL_STATE = {
   userId: "",
   token: "",
-  validToken: false,
-  form: "LOGIN"
+  validToken: false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -27,6 +26,8 @@ export default (state = INITIAL_STATE, action) => {
         userId: action.payload.userId,
         token: action.payload.token
       };
+    case "USER_REGISTRED":
+      return state;
     default: {
       return state;
     }
