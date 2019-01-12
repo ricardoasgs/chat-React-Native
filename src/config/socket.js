@@ -1,5 +1,5 @@
 import io from "socket.io-client";
 
-const socket = io.connect("http://10.0.2.2:3003");
+const socket = io.connect("https://react-native-chat-api.herokuapp.com");
 
 export default socket;

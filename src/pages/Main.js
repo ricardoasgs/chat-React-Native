@@ -39,21 +39,24 @@ class Main extends Component {
 
   render() {
     const { chats } = this.props;
-
-    return chats.length < 1 ? (
+    console.log(chats);
+    return (
       <FlatList
         style={styles.container}
         data={chats}
         keyExtractor={chat => chat._id}
-        renderItem={({ item }) => (
-          <Conversation
-            conversation={item}
-            navigate={this.props.navigation.navigate}
-            key={item._id}
-          />
-        )}
+        renderItem={({ item }) => {
+          console.log(item);
+          return (
+            <Conversation
+              conversation={item}
+              navigate={this.props.navigation.navigate}
+              key={item._id}
+            />
+          );
+        }}
       />
-    ) : null;
+    );
   }
 }
 

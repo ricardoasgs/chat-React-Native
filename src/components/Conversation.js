@@ -23,6 +23,7 @@ class Conversation extends Component {
 
   render() {
     const { conversation } = this.props;
+    console.log(conversation);
     const lastConversationIndex = conversation.messages.length - 1;
     return (
       <View style={styles.container}>

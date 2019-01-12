@@ -14,11 +14,13 @@ import {
 } from "./types";
 
 export async function fetchRooms() {
+  console.log("FETCH");
   const userId = await AsyncStorage.getItem("userId");
   return dispatch => {
     socket.emit("getChats", userId);
     socket.on("chats", data => {
       //joinChats(data);
+      //console.log(data);
       dispatch({
         type: FETCH_CHATS,
         payload: data
@@ -34,7 +36,9 @@ export async function fetchRooms() {
 // }
 
 export function selectRoom(chat, callback) {
-  chat.messages = chat.messages.reverse();
+  //chat.messages = chat.messages.reverse();
+  console.log("SELECT");
+  //console.log(chat.messages);
   return dispatch => {
     dispatch({
       type: SELECT_CHAT,
@@ -45,8 +49,9 @@ export function selectRoom(chat, callback) {
 }
 
 export function updateRoom(chat) {
-  chat.messages = chat.messages.reverse();
-  console.log(chat);
+  //chat.messages = chat.messages.reverse();
+  //console.log(chat);
+  console.log("UPDATE");
   return dispatch => {
     dispatch({
       type: SELECT_CHAT,
@@ -56,6 +61,7 @@ export function updateRoom(chat) {
 }
 
 export function selectRecipient(recipient) {
+  console.log("RECIPIENT");
   return dispatch => {
     dispatch({
       type: SELECT_RECIPIENT,

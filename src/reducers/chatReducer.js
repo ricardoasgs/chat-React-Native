@@ -18,6 +18,8 @@ const INITIAL_STATE = {
 export default function(state = INITIAL_STATE, action) {
   switch (action.type) {
     case SELECT_CHAT:
+      console.log("CHAT CHANGED");
+      //console.log(action.payload);
       return { ...state, chat: action.payload };
     case SELECT_RECIPIENT:
       return { ...state, recipient: action.payload };

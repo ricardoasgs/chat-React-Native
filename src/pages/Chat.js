@@ -38,7 +38,7 @@ class Chat extends Component {
   });
 
   state = {
-    render: false
+    messages: []
   };
 
   getRecipient = () => {
@@ -54,25 +54,22 @@ class Chat extends Component {
   componentDidMount() {
     this.getRecipient();
     this.subscribeToEvents();
+    this.setState({ messages: this.props.chat.messages.reverse() });
   }
 
   subscribeToEvents = () => {
     socket.on("newMessage", data => {
-      this.setState({ render: true });
-      const newChat = this.props.chat;
-      newChat.messages.reverse();
-      newChat.messages.push(data);
-      this.props.dispatch(updateRoom(newChat));
-      this.setState({ render: false });
+      const { messages } = this.state;
+      newMessages = messages.reverse();
+      newMessages.push(data);
+      newMessages = newMessages.reverse();
+      this.setState({ messages: newMessages });
     });
   };
 
   render() {
-    const { messages } = this.props.chat;
     const { userId } = this.props;
-    const { render } = this.state;
-    console.log(render);
-    console.log(messages);
+    const { messages } = this.state;
     return (
       <KeyboardAvoidingView style={styles.container} behavior="heigth">
         <View style={styles.viewContainer}>
@@ -81,7 +78,6 @@ class Chat extends Component {
             style={styles.messagesContainer}
             initialNumToRender={9}
             data={messages}
-            extraData={render}
             keyExtractor={message => message._id}
             renderItem={({ item }) => {
               return item.userId != userId ? (
